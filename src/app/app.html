@@ -11,5 +11,9 @@
     <h1>
         {{ title() }}
     </h1>
-    <p>Welcome to the {{ title() }}!</p>
+    
+    <input type="text" placeholder="Stadt eingeben" (input)="onInput($event)">
+    <button (click)="suchen()">Search</button>
+
+    <p>Stadt: {{ stadt()}}</p>
 </main>

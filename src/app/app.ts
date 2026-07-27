@@ -9,4 +9,14 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('weather-app');
+  protected readonly stadt = signal('');
+
+  onInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.stadt.set(input.value);
+  }
+
+  suchen() {
+    console.log('Suche Wetter für:', this.stadt());
+  }
 }
