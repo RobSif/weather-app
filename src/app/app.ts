@@ -1,15 +1,25 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, signal, inject } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { WeatherService } from './weather.service';
+;
 
 @Component({
   selector: 'app-root',
-  //imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('weather-app');
   protected readonly stadt = signal('');
+  protected readonly gesuchteStadt = signal('');
+
+  private weatherService = inject(WeatherService);
+
+  protected readonly wetter = httpResource<any>(() => {
+    const stadt = this.gesuchteStadt();
+    if (!stadt) return undefined; // kein Call, solange nichts gesucht wurde
+    return this.weatherService.buildUrl(stadt);
+  });
 
   onInput(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -17,6 +27,6 @@ export class App {
   }
 
   suchen() {
-    console.log('Suche Wetter für:', this.stadt());
+    this.gesuchteStadt.set(this.stadt());
   }
 }

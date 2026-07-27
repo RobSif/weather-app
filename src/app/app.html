@@ -1,19 +1,26 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
 <main>
-    <h1>
-        {{ title() }}
-    </h1>
-    
-    <input type="text" placeholder="Stadt eingeben" (input)="onInput($event)">
-    <button (click)="suchen()">Search</button>
+  <h1>{{ title() }}</h1>
 
-    <p>Stadt: {{ stadt()}}</p>
+  <input
+    type="text"
+    placeholder="Stadt eingeben"
+    (input)="onInput($event)"
+  >
+  <button (click)="suchen()">Search</button>
+
+  @if (wetter.isLoading()) {
+    <p>Lädt...</p>
+  }
+
+  @if (wetter.error()) {
+    <p>Fehler: Stadt nicht gefunden.</p>
+  }
+
+  @if (wetter.value(); as daten) {
+    <div>
+      <h2>{{ daten.name }}</h2>
+      <p>{{ daten.main.temp }}°C</p>
+      <p>{{ daten.weather[0].description }}</p>
+    </div>
+  }
 </main>
