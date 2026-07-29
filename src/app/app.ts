@@ -29,18 +29,51 @@ export class App {
     if (main === 'Thunderstorm') return 'sturm';
     if (main === 'Rain' || main === 'Drizzle') return 'regen';
     if (main === 'Snow') return 'schnee';
-    if (main === 'Clouds' || main === 'Mist' || main === 'Fog' || main === 'Haze') return 'wolkig';
+    if (main === 'Mist' || main === 'Fog' || main === 'Haze') return 'nebel';
+    if (main === 'Clouds') return 'wolkig';
     return 'klar';
   });
 
-  protected readonly windDauer = computed(() => {
-    const wind = (this.wetter.value() as any)?.wind?.speed ?? 3;
-    return Math.max(1.2, 6 - wind * 0.4) + 's';
+  protected readonly istTag = computed(() => {
+    const daten = this.wetter.value() as any;
+    const icon: string = daten?.weather?.[0]?.icon ?? '01d';
+    return icon.endsWith('d');
   });
 
-  protected readonly regenTropfen = Array.from({ length: 40 }, (_, i) => i);
-  protected readonly wolkenListe = Array.from({ length: 5 }, (_, i) => i);
-  protected readonly baumListe = Array.from({ length: 6 }, (_, i) => i);
+  protected readonly videoUrl = computed(() => {
+    const mapping: Record<string, string> = {
+      regen: 'video-weather/rain.mp4',
+      sturm: 'video-weather/thunder.mp4',
+      wolkig: 'video-weather/cloudy-sky.mp4',
+      nebel: 'video-weather/foggy.mp4',
+      schnee: 'video-weather/snowy.mp4',
+      klar: 'video-weather/cloudy-sky.mp4', // Platzhalter bis Sonnen-Video da ist
+    };
+    return mapping[this.kategorie()] ?? mapping['wolkig'];
+  });
+
+  protected readonly iconUrl = computed(() => {
+    const daten = this.wetter.value() as any;
+    if (!daten) return '';
+    const owmIcon: string = daten.weather?.[0]?.icon ?? '01d';
+    const code = owmIcon.slice(0, 2);
+    const nacht = !this.istTag();
+
+    const mapping: Record<string, string> = {
+      '01': nacht ? 'clear-night' : 'clear-day',
+      '02': nacht ? 'partly-cloudy-night' : 'partly-cloudy-day',
+      '03': 'cloudy',
+      '04': 'overcast',
+      '09': nacht ? 'partly-cloudy-night-drizzle' : 'partly-cloudy-day-drizzle',
+      '10': nacht ? 'partly-cloudy-night-rain' : 'partly-cloudy-day-rain',
+      '11': nacht ? 'thunderstorms-night-rain' : 'thunderstorms-day-rain',
+      '13': nacht ? 'partly-cloudy-night-snow' : 'partly-cloudy-day-snow',
+      '50': nacht ? 'fog-night' : 'fog-day',
+    };
+
+    const name = mapping[code] ?? 'not-available';
+    return `https://cdn.jsdelivr.net/npm/@meteocons/svg/fill/${name}.svg`;
+  });
 
   onInput(event: Event) {
     const input = event.target as HTMLInputElement;

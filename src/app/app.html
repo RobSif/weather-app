@@ -1,48 +1,17 @@
-<div class="himmel-hintergrund" [class]="kategorie()">
+<div class="himmel-hintergrund" [class.nacht]="!istTag()">
+  <video
+    [src]="videoUrl()"
+    autoplay
+    loop
+    muted
+    playsinline
+    class="hintergrund-video"
+  ></video>
+  <div class="verdunkelung"></div>
 
-  @switch (kategorie()) {
-    @case ('regen') {
-      <div class="regen-schicht">
-        @for (tropfen of regenTropfen; track tropfen) {
-          <div class="regentropfen"
-               [style.left.%]="(tropfen * 2.5) % 100"
-               [style.animation-delay.s]="(tropfen % 10) * 0.15">
-          </div>
-        }
-      </div>
-    }
-    @case ('sturm') {
-      <div class="regen-schicht sturm-regen">
-        @for (tropfen of regenTropfen; track tropfen) {
-          <div class="regentropfen"
-               [style.left.%]="(tropfen * 2.5) % 100"
-               [style.animation-delay.s]="(tropfen % 10) * 0.1">
-          </div>
-        }
-      </div>
-      <div class="blitz"></div>
-    }
-    @case ('wolkig') {
-      <div class="wolken-schicht">
-        @for (wolke of wolkenListe; track wolke) {
-          <div class="wolke"
-               [style.top.%]="10 + wolke * 15"
-               [style.animation-delay.s]="wolke * -4"
-               [style.animation-duration.s]="25 + wolke * 5">
-          </div>
-        }
-      </div>
-    }
-    @case ('klar') {
-      <div class="sonne"></div>
-    }
+  @if (kategorie() === 'sturm') {
+    <div class="blitz"></div>
   }
-
-  <div class="baum-reihe" [style.--wind-dauer]="windDauer()">
-    @for (baum of baumListe; track baum) {
-      <div class="baum" [style.left.%]="baum * 18 + 3"></div>
-    }
-  </div>
 </div>
 
 <main>
@@ -67,6 +36,7 @@
 
   @if (wetter.value(); as daten) {
     <div class="wetter-karte">
+      <img [src]="iconUrl()" alt="" class="wetter-icon" width="120" height="120">
       <h2>{{ daten.name }}</h2>
       <p class="temperatur">{{ daten.main.temp | number:'1.0-0' }}°</p>
       <p class="beschreibung">{{ daten.weather[0].description }}</p>
