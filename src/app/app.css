@@ -162,3 +162,38 @@ button:focus-visible {
   98%   { opacity: 0.6; }
   98.5% { opacity: 0; }
 }
+
+.such-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.such-wrapper input {
+  width: 100%;
+}
+
+.vorschlags-liste {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #f8f5f0;
+  border-radius: 8px;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.vorschlags-liste li {
+  padding: 0.6rem 1rem;
+  color: #1a2942;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.vorschlags-liste li:hover {
+  background: rgba(244, 162, 89, 0.2);
+}

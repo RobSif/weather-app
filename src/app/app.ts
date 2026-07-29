@@ -13,13 +13,21 @@ export class App {
   protected readonly title = signal('weather-app');
   protected readonly stadt = signal('');
   protected readonly gesuchteStadt = signal('');
+  protected readonly vorschlagsSuche = signal('');
 
+  private debounceTimer?: ReturnType<typeof setTimeout>;
   private weatherService = inject(WeatherService);
 
   protected readonly wetter = httpResource<any>(() => {
     const stadt = this.gesuchteStadt();
     if (!stadt) return undefined;
     return this.weatherService.buildUrl(stadt);
+  });
+
+  protected readonly vorschlaege = httpResource<any[]>(() => {
+    const suche = this.vorschlagsSuche();
+    if (!suche || suche.length < 2) return undefined;
+    return this.weatherService.buildGeoUrl(suche);
   });
 
   protected readonly kategorie = computed(() => {
@@ -47,7 +55,7 @@ export class App {
       wolkig: 'video-weather/cloudy-sky.mp4',
       nebel: 'video-weather/foggy.mp4',
       schnee: 'video-weather/snowy.mp4',
-      klar: 'video-weather/cloudy-sky.mp4', // Platzhalter bis Sonnen-Video da ist
+      klar: 'video-weather/cloudy-sky.mp4',
     };
     return mapping[this.kategorie()] ?? mapping['wolkig'];
   });
@@ -77,10 +85,23 @@ export class App {
 
   onInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.stadt.set(input.value);
+    const wert = input.value;
+    this.stadt.set(wert);
+
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.vorschlagsSuche.set(wert);
+    }, 300);
+  }
+
+  vorschlagWaehlen(name: string) {
+    this.stadt.set(name);
+    this.gesuchteStadt.set(name);
+    this.vorschlagsSuche.set('');
   }
 
   suchen() {
     this.gesuchteStadt.set(this.stadt());
+    this.vorschlagsSuche.set('');
   }
 }

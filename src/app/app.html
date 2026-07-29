@@ -18,11 +18,29 @@
   <h1>{{ title() }}</h1>
 
   <div class="suchleiste">
-    <input
-      type="text"
-      placeholder="Stadt eingeben"
-      (input)="onInput($event)"
-    >
+    <div class="such-wrapper">
+      <input
+        type="text"
+        placeholder="Stadt eingeben"
+        [value]="stadt()"
+        (input)="onInput($event)"
+        (keydown.enter)="suchen()"
+        autocomplete="off"
+      >
+
+      @if (vorschlaege.value(); as liste) {
+        @if (liste.length > 0 && stadt().length > 1) {
+          <ul class="vorschlags-liste">
+            @for (ort of liste; track ort.lat + '-' + ort.lon) {
+              <li (click)="vorschlagWaehlen(ort.name)">
+                {{ ort.name }}{{ ort.state ? ', ' + ort.state : '' }}, {{ ort.country }}
+              </li>
+            }
+          </ul>
+        }
+      }
+    </div>
+
     <button (click)="suchen()">Search</button>
   </div>
 
