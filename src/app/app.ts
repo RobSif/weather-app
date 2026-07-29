@@ -10,7 +10,7 @@ import { WeatherService } from './weather.service';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('weather-app');
+  protected readonly title = signal('World Weather');
   protected readonly stadt = signal('');
   protected readonly gesuchteStadt = signal('');
   protected readonly vorschlagsSuche = signal('');
