@@ -11,7 +11,7 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  "postCreateCommand": "npm install",
+  "postCreateCommand": "apt-get update && apt-get install -y ca-certificates && update-ca-certificates && npm install && npm install -g @angular/cli",
   "customizations": {
     "vscode": {
       "extensions": [
